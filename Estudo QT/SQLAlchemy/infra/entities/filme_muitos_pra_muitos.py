@@ -3,7 +3,6 @@ from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from infra.configs.base import Base
 
-
 association_table = Table(
     "ator_filmes",
     Base.metadata,
@@ -20,7 +19,6 @@ class Filme(Base):
     ano: Mapped[int] = mapped_column(nullable=False)
     atores: Mapped["Ator"] = relationship()
 
-
     # Esta função demonstra o objeto de uma forma mais legível
     def __repr__(self):
         return f'Filme [titulo={self.titulo}, ano={self.ano}]'
@@ -29,11 +27,10 @@ class Filme(Base):
 class Ator(Base):
     __tablename__ = 'atores'
 
-    id: Mapped[int]  = mapped_column(primary_key=True, autoincrement=True)
-    nome: Mapped[str]  = mapped_column(nullable=False)
-    nascimento: Mapped[int]  = mapped_column(nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    nome: Mapped[str] = mapped_column(nullable=False)
+    nascimento: Mapped[int] = mapped_column(nullable=False)
     filme: Mapped[List["Filme"]] = relationship('filmes', secondary=association_table, back_populates='atores')
-
 
     # Esta função demonstra o objeto de uma forma mais legível
     def __repr__(self):

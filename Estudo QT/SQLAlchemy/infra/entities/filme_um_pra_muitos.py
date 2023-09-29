@@ -13,12 +13,12 @@ from infra.configs.base import Base
 
 class Filme(Base):
     __tablename__ = 'filmes'
-    
+
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     titulo: Mapped[str] = mapped_column(nullable=False)
     genero: Mapped[str] = mapped_column(nullable=False)
     ano: Mapped[int] = mapped_column(nullable=False)
-    atores: Mapped[List["Ator"]] = relationship()
+    atores: Mapped[List["Ator"]] = relationship(lazy='joined')
 
 
     # Esta função demonstra o objeto de uma forma mais legível
