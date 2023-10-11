@@ -1,5 +1,5 @@
 from infra.configs.connection import DBConnectioHandler
-from infra.entities.filme_muitos_pra_muitos import Filme, Ator
+from infra.entities.filme_um_pra_muitos import Filme, Ator
 
 
 class FilmeRepository:
@@ -29,17 +29,22 @@ class FilmeRepository:
             data = db.session.query(Filme).first()
             return data
 
-    def insert(self, filmes):
+    def insert_many(self, filmes):
         with DBConnectioHandler() as db:
             db.session.add_all(filmes)
             db.session.commit()
 
-    def delete(self, titulo):
+    def insert_one(self, filme):
         with DBConnectioHandler() as db:
-            db.session.query(Filme).filter(Filme.titulo == titulo).delete()
+            db.session.add(filme)
             db.session.commit()
 
-    def update(self, titulo, ano):
+    def delete(self, filme):
         with DBConnectioHandler() as db:
-            db.session.query(Filme).filter(Filme.titulo == titulo).update({'ano': ano})
+            db.session.delete(filme)
+            db.session.commit()
+
+    def update(self, filme):
+        with DBConnectioHandler() as db:
+            db.session.query(Filme).filter(Filme.id == filme.id).update({'titulo': filme.titulo, 'ano': filme.ano})
             db.session.commit()
