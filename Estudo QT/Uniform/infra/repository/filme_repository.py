@@ -4,6 +4,7 @@ from infra.entities.filme_um_pra_muitos import Filme, Ator
 
 class FilmeRepository:
 
+
     def select_filme_by_id(self, id):
         with (DBConnectioHandler() as db):
             filme = db.session.query(Filme).filter(Filme.id == id).first()
