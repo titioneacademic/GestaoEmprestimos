@@ -1,4 +1,7 @@
-from PySide6.QtWidgets import QTableWidgetItem
+import datetime
+
+from PySide6.QtWidgets import QTableWidgetItem, QMessageBox
+import pandas as pd
 
 from infra.repository.emprestimo_repository import EmprestimoRepository
 from infra.repository.uniforme_repository import UniformeRepository
@@ -61,4 +64,54 @@ class MainWindowService:
             emprestimo_ui.cb_uniforme.addItem(uniforme.nome)
 
     def populate_relatorio(self, main_window):
-        pass
+        try:
+            main_window.tb_relatorio.setRowCount(0)
+            emprestimos = self.emprestimos_repository.select_emprestimos_in_period(main_window.txt_data_inicial.text(),
+                                                                                   main_window.txt_data_final.text())
+            main_window.tb_relatorio.setRowCount(len(emprestimos))
+            for linha, (emp, funcionario, uniforme) in enumerate(emprestimos):
+                main_window.tb_relatorio.setItem(linha, 0, QTableWidgetItem(funcionario.nome))
+                main_window.tb_relatorio.setItem(linha, 1, QTableWidgetItem(funcionario.cpf))
+                main_window.tb_relatorio.setItem(linha, 2,
+                                                          QTableWidgetItem(emp.data_emprestimo.strftime('%d/%m/%Y')))
+                main_window.tb_relatorio.setItem(linha, 3,
+                                                   QTableWidgetItem("Não devolvido" if emp.data_devolucao is None
+                                                                    else emp.data_devolucao.strftime('%d/%m/%Y')))
+                main_window.tb_relatorio.setItem(linha, 4, QTableWidgetItem(uniforme.nome))
+
+        except Exception as e:
+            QMessageBox.warning(main_window, "Atenção", "Período de data incorreto!")
+
+    def export_relatorio(self, main_window):
+        if main_window.tb_relatorio.rowCount() > 0:
+            rows = main_window.tb_relatorio.rowCount()
+            cols = main_window.tb_relatorio.columnCount()
+            headers = ['Nome do Funcionário', 'CPF do Funcionário', 'Data de Empréstimo', 'Data de Devolução',
+                       'Tipo de Uniforme']
+
+            data = []
+            for row in range(rows):
+                row_data = []
+                for col in range(cols):
+                    item = main_window.tb_relatorio.item(row, col)
+                    if item and item.text():
+                        row_data.append(item.text())
+                    else:
+                        row_data.append('')
+                data.append(row_data)
+            df = pd.DataFrame(data, columns=headers)
+
+
+            try:
+                df.to_excel(f'relarorio_{datetime.datetime.now()}.xlsx', index=False)
+                QMessageBox.information(main_window, "Empréstimos", f'Relatório exportado com sucesso! \n'
+                                                                    f'Verifique na pasta do programa o arquivo:\n'
+                                                                    f' relarorio_{datetime.datetime.now()}.xlsx')
+            except Exception as e:
+                QMessageBox.warning(main_window, "Atenção", "Problema ao exportar relatório!")
+
+            # Aqui é onde você pode ter encontrado o problema
+            # df.append não é uma operação inplace, então você não precisa disso:
+            # df = df.append(data)
+
+

@@ -59,22 +59,28 @@ class EmprestimoRepository:
             return emprestimos
 
     @staticmethod
-    def select_emprestimos_in_period(start_date, end_date):
-        with DBConnectioHandler() as db:
-            emprestimos = (
-                db.session.query(Emprestimo, Funcionario, Uniforme)
-                .join(Funcionario, Funcionario.id == Emprestimo.funcionario_id)
-                .join(Uniforme, Uniforme.id == Emprestimo.uniforme_id)
-                .filter(
-                    Emprestimo.data_emprestimo.between(start_date, end_date)
+    def select_emprestimos_in_period(begin_date, end_date):
+        try:
+            begin_date = datetime.strptime(begin_date, '%d/%m/%Y')
+            end_date = datetime.strptime(end_date, '%d/%m/%Y')
+            end_date = end_date.replace(hour=23, minute=59, second=59)
+            with DBConnectioHandler() as db:
+                emprestimos = (
+                    db.session.query(Emprestimo, Funcionario, Uniforme)
+                    .join(Funcionario, Funcionario.id == Emprestimo.funcionario_id)
+                    .join(Uniforme, Uniforme.id == Emprestimo.uniforme_id)
+                    .filter(
+                        Emprestimo.data_emprestimo.between(begin_date, end_date)
+                    )
+                    .options(
+                        joinedload(Emprestimo.funcionario),  # Usa a relação aqui
+                        joinedload(Emprestimo.uniforme)  # E aqui
+                    )
+                    .all()
                 )
-                .options(
-                    joinedload(Emprestimo.funcionario),  # Usa a relação aqui
-                    joinedload(Emprestimo.uniforme)  # E aqui
-                )
-                .all()
-            )
-            return emprestimos
+                return emprestimos
+        except Exception as e:
+            print(e)
 
     @staticmethod
     def select_emprestimos_ativos():

@@ -16,7 +16,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.emprestimo_dialog = None
         self.setupUi(self)
         self.uniforme_updated = None
-
         self.service_main_window = MainWindowService()
         self.service_funcionario = FuncionarioService()
         self.service_uniforme = UniformeService()
@@ -34,6 +33,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.btn_editar_uniforme.clicked.connect(self.atualizar_uniforme)
         self.btn_remover_uniforme.clicked.connect(self.remover_uniforme)
         self.btn_consultar_periodo.clicked.connect(self.consultar_periodo)
+        self.btn_exportar.clicked.connect(self.exportar_relatorio)
 
     def adicionar_funcionario(self):
         self.service_funcionario.insert_funcionario(self)
@@ -59,6 +59,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def consultar_periodo(self):
         self.service_main_window.populate_relatorio(self)
 
+    def exportar_relatorio(self):
+        self.service_main_window.export_relatorio(self)
+
     def adicionar_emprestimo(self):
         self.emprestimo_dialog = EmprestimoDialog(self)
         self.emprestimo_dialog.show()
@@ -72,14 +75,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 class EmprestimoDialog(QDialog, Ui_Dialog):
     def __init__(self, parent=None):
         super(EmprestimoDialog, self).__init__(parent)
-        self.setupUi(self)
-        self.uiforme_service = UniformeService()
-        self.service_funcionario = FuncionarioService()
-        self.service_emprestimo = EmprestimoService()
-        self.service_main_window = MainWindowService()
-
         self.selected_funcionario = None
         self.uniformes = []
+        self.setupUi(self)
+        self.service_main_window = MainWindowService()
+        self.service_uiforme = UniformeService()
+        self.service_funcionario = FuncionarioService()
+        self.service_emprestimo = EmprestimoService()
 
         self.populate_uniformes()
         self.btn_consulta_funcionario.clicked.connect(self.get_funcionario)
@@ -97,8 +99,6 @@ class EmprestimoDialog(QDialog, Ui_Dialog):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-    # Definição de tema escuro
     palette = QPalette()
     palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
     palette.setColor(QPalette.ColorRole.WindowText, Qt.GlobalColor.white)
@@ -120,7 +120,6 @@ if __name__ == "__main__":
     palette.setColor(QPalette.ColorRole.HighlightedText, QColor(0, 0, 0))
     app.setPalette(palette)
     app.setStyle('Fusion')
-
     window = MainWindow()
     window.show()
     sys.exit(app.exec())

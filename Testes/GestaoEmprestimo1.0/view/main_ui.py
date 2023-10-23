@@ -19,7 +19,6 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QLabel, QLineEdit, QMainWindow, QPushButton,
                                QSizePolicy, QSpacerItem, QTabWidget, QTableWidget,
                                QTableWidgetItem, QVBoxLayout, QWidget, QAbstractItemView)
-
 import view.resource_rc
 
 class Ui_MainWindow(object):
@@ -121,8 +120,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.lbl_data_inicial)
 
         self.txt_data_inicial = QLineEdit(self.tab_relatorio)
-        #TODO Adicionar a máscara para a data no formato dd/mm/yyyy, o sublinhado (_) será mostrado no QLineEdit
-        # para representar espaços que o usuário ainda não preencheu.
+        self.txt_data_inicial.setObjectName(u"txt_data_inicial")
+        # TODO Adicionar a máscara para a data no formato dd/mm/yyyy, o sublinhado (_) será mostrado no QLineEdit
+        #  para representar espaços que o usuário ainda não preencheu.
         self.txt_data_inicial.setInputMask("99/99/9999;_")
         self.txt_data_inicial.setObjectName(u"txt_data_inicial")
 
@@ -134,12 +134,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.lbl_data_final)
 
         self.txt_data_final = QLineEdit(self.tab_relatorio)
+        self.txt_data_final.setObjectName(u"txt_data_final")
+
+        self.horizontalLayout_5.addWidget(self.txt_data_final)
         # TODO Adicionar a máscara para a data no formato dd/mm/yyyy, o sublinhado (_) será mostrado no QLineEdit
         #  para representar espaços que o usuário ainda não preencheu.
         self.txt_data_final.setInputMask("99/99/9999;_")
         self.txt_data_final.setObjectName(u"txt_data_final")
-
-        self.horizontalLayout_5.addWidget(self.txt_data_final)
 
         self.btn_consultar_periodo = QPushButton(self.tab_relatorio)
         self.btn_consultar_periodo.setObjectName(u"btn_consultar_periodo")
@@ -154,11 +155,12 @@ class Ui_MainWindow(object):
         self.tb_relatorio.verticalHeader().hide()
         header_tb_relatorio = self.tb_relatorio.horizontalHeader()
         header_tb_relatorio.setSectionResizeMode(QHeaderView.Stretch)
+        header_tb_relatorio.setMinimumSectionSize(200)
         self.tb_relatorio.setSelectionBehavior(QTableWidget.SelectRows)
         self.tb_relatorio.setEditTriggers(QTableWidget.NoEditTriggers)
         self.tb_relatorio.setSelectionMode(QAbstractItemView.SingleSelection)
-        if (self.tb_relatorio.columnCount() < 4):
-            self.tb_relatorio.setColumnCount(4)
+        if (self.tb_relatorio.columnCount() < 5):
+            self.tb_relatorio.setColumnCount(5)
         __qtablewidgetitem4 = QTableWidgetItem()
         self.tb_relatorio.setHorizontalHeaderItem(0, __qtablewidgetitem4)
         __qtablewidgetitem5 = QTableWidgetItem()
@@ -167,10 +169,23 @@ class Ui_MainWindow(object):
         self.tb_relatorio.setHorizontalHeaderItem(2, __qtablewidgetitem6)
         __qtablewidgetitem7 = QTableWidgetItem()
         self.tb_relatorio.setHorizontalHeaderItem(3, __qtablewidgetitem7)
+        __qtablewidgetitem8 = QTableWidgetItem()
+        self.tb_relatorio.setHorizontalHeaderItem(4, __qtablewidgetitem8)
         self.tb_relatorio.setObjectName(u"tb_relatorio")
 
         self.verticalLayout_4.addWidget(self.tb_relatorio)
+        self.horizontalLayout_6 = QHBoxLayout()
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalSpacer = QSpacerItem(548, 17, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
+        self.horizontalLayout_6.addItem(self.horizontalSpacer)
+        #TODO Adicionar botão exportar
+        self.btn_exportar = QPushButton(self.tab_relatorio)
+        self.btn_exportar.setObjectName(u"btn_exportar")
+        self.horizontalLayout_6.addWidget(self.btn_exportar)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout_6)
         self.tab_principal.addTab(self.tab_relatorio, "")
         self.tab_configuracoes = QWidget()
         self.tab_configuracoes.setObjectName(u"tab_configuracoes")
@@ -225,8 +240,8 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.btn_adicionar_funcionario)
 
-        self.tb_funcionario = QTableWidget(self.coluna_funcionario)
         # TODO adicionar header responsivo, não editável, selecionando apenas uma linha  e com select na linha inteira
+        self.tb_funcionario = QTableWidget(self.coluna_funcionario)
         header_tb_funcionario = self.tb_funcionario.horizontalHeader()
         self.tb_funcionario.verticalHeader().hide()
         header_tb_funcionario.setSectionResizeMode(QHeaderView.Stretch)
@@ -235,10 +250,10 @@ class Ui_MainWindow(object):
         self.tb_funcionario.setSelectionMode(QAbstractItemView.SingleSelection)
         if (self.tb_funcionario.columnCount() < 2):
             self.tb_funcionario.setColumnCount(2)
-        __qtablewidgetitem8 = QTableWidgetItem()
-        self.tb_funcionario.setHorizontalHeaderItem(0, __qtablewidgetitem8)
         __qtablewidgetitem9 = QTableWidgetItem()
-        self.tb_funcionario.setHorizontalHeaderItem(1, __qtablewidgetitem9)
+        self.tb_funcionario.setHorizontalHeaderItem(0, __qtablewidgetitem9)
+        __qtablewidgetitem10 = QTableWidgetItem()
+        self.tb_funcionario.setHorizontalHeaderItem(1, __qtablewidgetitem10)
         self.tb_funcionario.setObjectName(u"tb_funcionario")
         self.tb_funcionario.verticalHeader().setVisible(False)
 
@@ -292,11 +307,10 @@ class Ui_MainWindow(object):
         header_tb_uniformes.setSectionResizeMode(QHeaderView.Stretch)
         self.tb_uniformes.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tb_uniformes.verticalHeader().hide()
-
         if (self.tb_uniformes.columnCount() < 1):
             self.tb_uniformes.setColumnCount(1)
-        __qtablewidgetitem10 = QTableWidgetItem()
-        self.tb_uniformes.setHorizontalHeaderItem(0, __qtablewidgetitem10)
+        __qtablewidgetitem11 = QTableWidgetItem()
+        self.tb_uniformes.setHorizontalHeaderItem(0, __qtablewidgetitem11)
         self.tb_uniformes.setObjectName(u"tb_uniformes")
         self.tb_uniformes.verticalHeader().setVisible(False)
 
@@ -344,11 +358,14 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem4 = self.tb_relatorio.horizontalHeaderItem(0)
         ___qtablewidgetitem4.setText(QCoreApplication.translate("MainWindow", u"Funcion\u00e1rio", None));
         ___qtablewidgetitem5 = self.tb_relatorio.horizontalHeaderItem(1)
-        ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"Data do empr\u00e9stimo", None));
+        ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"CPF Funcion\u00e1rio", None));
         ___qtablewidgetitem6 = self.tb_relatorio.horizontalHeaderItem(2)
-        ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"Data da devolu\u00e7\u00e3o", None));
+        ___qtablewidgetitem6.setText(QCoreApplication.translate("MainWindow", u"Data do empr\u00e9stimo", None));
         ___qtablewidgetitem7 = self.tb_relatorio.horizontalHeaderItem(3)
-        ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"Uniforme emprestado", None));
+        ___qtablewidgetitem7.setText(QCoreApplication.translate("MainWindow", u"Data da devolu\u00e7\u00e3o", None));
+        ___qtablewidgetitem8 = self.tb_relatorio.horizontalHeaderItem(4)
+        ___qtablewidgetitem8.setText(QCoreApplication.translate("MainWindow", u"Uniforme emprestado", None));
+        self.btn_exportar.setText(QCoreApplication.translate("MainWindow", u"Exportar", None))
         self.tab_principal.setTabText(self.tab_principal.indexOf(self.tab_relatorio), QCoreApplication.translate("MainWindow", u"Relat\u00f3rio", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:16pt; font-weight:600;\">Funcion\u00e1rios</span></p></body></html>", None))
         self.lbl_nome.setText(QCoreApplication.translate("MainWindow", u"Nome", None))
@@ -356,17 +373,17 @@ class Ui_MainWindow(object):
         self.btn_editar_funcionario.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
         self.btn_remover_funcionario.setText(QCoreApplication.translate("MainWindow", u"Remover", None))
         self.btn_adicionar_funcionario.setText(QCoreApplication.translate("MainWindow", u"Adicionar", None))
-        ___qtablewidgetitem8 = self.tb_funcionario.horizontalHeaderItem(0)
-        ___qtablewidgetitem8.setText(QCoreApplication.translate("MainWindow", u"Nome", None));
-        ___qtablewidgetitem9 = self.tb_funcionario.horizontalHeaderItem(1)
-        ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"CPF", None));
+        ___qtablewidgetitem9 = self.tb_funcionario.horizontalHeaderItem(0)
+        ___qtablewidgetitem9.setText(QCoreApplication.translate("MainWindow", u"Nome", None));
+        ___qtablewidgetitem10 = self.tb_funcionario.horizontalHeaderItem(1)
+        ___qtablewidgetitem10.setText(QCoreApplication.translate("MainWindow", u"CPF", None));
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:16pt; font-weight:600;\">Uniformes</span></p></body></html>", None))
         self.lbl_nome_uniforme.setText(QCoreApplication.translate("MainWindow", u"Nome", None))
         self.btn_editar_uniforme.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
         self.btn_remover_uniforme.setText(QCoreApplication.translate("MainWindow", u"Remover", None))
         self.btn_adicionar_uniforme.setText(QCoreApplication.translate("MainWindow", u"Adicionar", None))
-        ___qtablewidgetitem10 = self.tb_uniformes.horizontalHeaderItem(0)
-        ___qtablewidgetitem10.setText(QCoreApplication.translate("MainWindow", u"Nome", None));
+        ___qtablewidgetitem11 = self.tb_uniformes.horizontalHeaderItem(0)
+        ___qtablewidgetitem11.setText(QCoreApplication.translate("MainWindow", u"Nome", None));
         self.tab_principal.setTabText(self.tab_principal.indexOf(self.tab_configuracoes), QCoreApplication.translate("MainWindow", u"Gest\u00e3o", None))
     # retranslateUi
 
