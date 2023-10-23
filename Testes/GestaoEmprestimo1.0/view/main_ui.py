@@ -121,6 +121,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.lbl_data_inicial)
 
         self.txt_data_inicial = QLineEdit(self.tab_relatorio)
+        #TODO Adicionar a máscara para a data no formato dd/mm/yyyy, o sublinhado (_) será mostrado no QLineEdit
+        # para representar espaços que o usuário ainda não preencheu.
+        self.txt_data_inicial.setInputMask("99/99/9999;_")
         self.txt_data_inicial.setObjectName(u"txt_data_inicial")
 
         self.horizontalLayout_5.addWidget(self.txt_data_inicial)
@@ -131,6 +134,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.lbl_data_final)
 
         self.txt_data_final = QLineEdit(self.tab_relatorio)
+        # TODO Adicionar a máscara para a data no formato dd/mm/yyyy, o sublinhado (_) será mostrado no QLineEdit
+        #  para representar espaços que o usuário ainda não preencheu.
+        self.txt_data_final.setInputMask("99/99/9999;_")
         self.txt_data_final.setObjectName(u"txt_data_final")
 
         self.horizontalLayout_5.addWidget(self.txt_data_final)

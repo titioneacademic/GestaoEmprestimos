@@ -59,3 +59,6 @@ class MainWindowService:
         for uniforme in emprestimo_ui.uniformes:
             # Supondo que o Uniforme tenha um atributo 'nome' que você quer mostrar no QComboBox
             emprestimo_ui.cb_uniforme.addItem(uniforme.nome)
+
+    def populate_relatorio(self, main_window):
+        pass

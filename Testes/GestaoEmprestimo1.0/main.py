@@ -33,6 +33,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.btn_receber.clicked.connect(self.finalizar_emprestimo)
         self.btn_editar_uniforme.clicked.connect(self.atualizar_uniforme)
         self.btn_remover_uniforme.clicked.connect(self.remover_uniforme)
+        self.btn_consultar_periodo.clicked.connect(self.consultar_periodo)
 
     def adicionar_funcionario(self):
         self.service_funcionario.insert_funcionario(self)
@@ -51,8 +52,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def remover_uniforme(self):
         self.service_uniforme.delete_uniforme(self)
+
     def finalizar_emprestimo(self):
         self.service_emprestimo.finalize_emprestimo(self)
+
+    def consultar_periodo(self):
+        self.service_main_window.populate_relatorio(self)
 
     def adicionar_emprestimo(self):
         self.emprestimo_dialog = EmprestimoDialog(self)
@@ -115,6 +120,7 @@ if __name__ == "__main__":
     palette.setColor(QPalette.ColorRole.HighlightedText, QColor(0, 0, 0))
     app.setPalette(palette)
     app.setStyle('Fusion')
+
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
