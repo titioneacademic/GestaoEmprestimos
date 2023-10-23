@@ -108,6 +108,11 @@
              </column>
              <column>
               <property name="text">
+               <string>CPF Funcionário</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
                <string>Data do empréstimo</string>
               </property>
              </column>

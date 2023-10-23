@@ -23,7 +23,7 @@ from infra.entities.emprestimo import Emprestimo
 # Claridade e legibilidade: Usar um método estático pode comunicar intenções claras ao leitor de que esse método
 # não depende ou modifica o estado da instância.
 
-class Repository:
+class UniformeRepository:
 
     @staticmethod
     def select_uniforme_by_id(id_uniforme):

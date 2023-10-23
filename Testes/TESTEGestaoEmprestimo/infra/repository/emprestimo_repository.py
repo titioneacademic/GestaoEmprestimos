@@ -83,8 +83,6 @@ class EmprestimoRepository:
                            .join(Funcionario, Funcionario.id == Emprestimo.funcionario_id)
                            .join(Uniforme, Uniforme.id == Emprestimo.uniforme_id)
                            .filter(Emprestimo.data_devolucao.is_(None))
-                           .options(joinedload(Emprestimo.funcionario),
-                                    joinedload(Emprestimo.uniforme))
                            .all())
             return emprestimos
 

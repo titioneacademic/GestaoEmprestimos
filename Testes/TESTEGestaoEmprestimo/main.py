@@ -1,73 +1,50 @@
-import datetime
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QDialog
 from PySide6.QtGui import QPalette, QColor, Qt
 
-from infra.entities.funcionario import Funcionario
-from infra.entities.uniforme import Uniforme
+from services.emprestimo_service import EmprestimoService
+from services.uniforme_service import UniformeService
 from view.emprestimo_ui import Ui_Dialog
 from view.main_ui import Ui_MainWindow
-from infra.repository.funcionario_repository import Repository
-from infra.configs.connection import DBConnectioHandler
+from services.mainwindow_service import MainWindowService
+from services.funcionario_service import FuncionarioService
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.emprestimo_dialog = None
         self.setupUi(self)
 
-        # Criação e estruturação da base
-        repo = Repository()
-        data_base = DBConnectioHandler()
+        self.service_main_window = MainWindowService()
+        self.service_funcionario = FuncionarioService()
+        self.service_uniforme = UniformeService()
+        self.service_emprestimo = EmprestimoService()
+        self.service_main_window.populate_table_emprestimos_ativos(self)
+        self.service_main_window.populate_table_funcionario(self)
+        self.service_main_window.populate_table_uniforme(self)
 
         self.btn_emprestar.clicked.connect(self.adicionar_emprestimo)
-        emp = repo.select_all_emprestimos()
-        print(emp)
+        self.btn_adicionar_funcionario.clicked.connect(self.adicionar_funcionario)
+        self.btn_adicionar_uniforme.clicked.connect(self.adicionar_uniforme)
+        self.btn_receber.clicked.connect(self.finalize_emprestimo)
 
-        func = Funcionario()
-        func.nome = 'Titione'
-        func.cpf = '00862508924'
-        unif = Uniforme()
-        unif.nome = 'Pista'
+    def adicionar_funcionario(self):
+        self.service_funcionario.insert_funcionario(self)
 
-        # repo.insert_one_funcionario(func)
-        # repo.insert_one_uniforme(unif)
-        fs = repo.select_all_funcionarios()
-        us = repo.select_all_uniformes()
-        f = fs[0]
-        u = us[0]
-        repo.insert_emprestimos(f, u)
-        date_1 = datetime.datetime.today()
-        date_2 = datetime.datetime.now() - datetime.timedelta(days=2)
+    def adicionar_uniforme(self):
+        self.service_uniforme.insert_uniforme(self)
 
-        #Consulta de relatorios de emprestimos
-        emprestimos = repo.select_emprestimos_in_period(date_2, date_1)
-        # print(f'\nRelatório baseado na data inicio = {date_2} e data fim {date_1}')
-        # for emprestimo, funcionario, uniforme in emprestimos:
-        #     print("ID do Empréstimo:", emprestimo.funcionario_id)  # ou qualquer outro atributo de Emprestimo
-        #     print("Nome do Funcionário:", funcionario.nome)  # ou qualquer outro atributo de Funcionario
-        #     print("CPF do Funcionário:", funcionario.cpf)  # ou qualquer outro atributo de Funcionario
-        #     print("Nome do Uniforme:", uniforme.nome)  # ou qualquer outro atributo de Uniforme
-        #     print("------------------------")
-        #
-        #
-        # #Consulta de emprestimos ativos
-        # emprestimos_ativos = repo.select_emprestimos_ativos()
-        # print('\nEmpréstimos ativos')
-        # for emprestimo, funcionario, uniforme in emprestimos_ativos:
-        #     print("ID do Empréstimo:", emprestimo.funcionario_id)  # ou qualquer outro atributo de Emprestimo
-        #     print("Nome do Funcionário:", funcionario.nome)  # ou qualquer outro atributo de Funcionario
-        #     print("CPF do Funcionário:", funcionario.cpf)  # ou qualquer outro atributo de Funcionario
-        #     print("Nome do Uniforme:", uniforme.nome)  # ou qualquer outro atributo de Uniforme
-        #     print("------------------------")
+    def finalize_emprestimo(self):
+        self.service_emprestimo.finalize_emprestimo(self)
 
-        #repo.finalizes_emprestimo(f, u)
-        # Se você quiser adicionar lógica adicional ou conexões de sinal/slot, faça-o aqui.
-
-    # Função para instanciar a janela de adição de empréstimo
     def adicionar_emprestimo(self):
         self.emprestimo_dialog = EmprestimoDialog(self)
         self.emprestimo_dialog.show()
+        # O uso do lambda garante que, quando o sinal finished for emitido, a função populate_table_emprestimos_ativos
+        # seja chamada com self (o objeto MainWindow) como argumento.
+        self.emprestimo_dialog.finished.connect(
+            lambda: self.service_main_window.populate_table_emprestimos_ativos(self))
 
 
 # Classe para instanciar o QDialog de empréstimo
@@ -75,6 +52,25 @@ class EmprestimoDialog(QDialog, Ui_Dialog):
     def __init__(self, parent=None):
         super(EmprestimoDialog, self).__init__(parent)
         self.setupUi(self)
+        self.uiforme_service = UniformeService()
+        self.service_funcionario = FuncionarioService()
+        self.service_emprestimo = EmprestimoService()
+
+        self.selected_funcionario = None
+        self.uniformes = []
+
+        self.populate_uniformes()
+        self.btn_consulta_funcionario.clicked.connect(self.get_funcionario)
+        self.btn_emprestar.clicked.connect(self.set_emprestimo)
+
+    def get_funcionario(self):
+        self.service_funcionario.select_funcionario(self)
+
+    def populate_uniformes(self):
+        self.uiforme_service.populate_uniformes(self)
+
+    def set_emprestimo(self):
+        self.service_emprestimo.insert_emprestimo(self)
 
 
 if __name__ == "__main__":
@@ -98,7 +94,8 @@ if __name__ == "__main__":
     palette.setColor(QPalette.ColorRole.BrightText, Qt.GlobalColor.red)
     palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
     palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
-    palette.setColor(QPalette.ColorRole.HighlightedText, QColor(127, 127, 127))
+    # TODO ajustar a cor do texto selecionado para preto
+    palette.setColor(QPalette.ColorRole.HighlightedText, QColor(0, 0, 0))
     app.setPalette(palette)
     app.setStyle('Fusion')
     window = MainWindow()
