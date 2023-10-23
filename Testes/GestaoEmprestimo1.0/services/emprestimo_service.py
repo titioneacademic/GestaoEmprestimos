@@ -12,40 +12,6 @@ class EmprestimoService:
         self.emprestimo_repository = EmprestimoRepository()
         self.uniforme_repository = UniformeRepository()
         self.funcionario_repository = FuncionarioRepository()
-        
-    
-    def adicionar_emprestimo(self, emprestimo_dialog):
-        self.emprestimo_dialog.show()
-        #O uso do lambda garante que, quando o sinal finished for emitido, a função populate_table_emprestimos_ativos seja chamada com self (o objeto MainWindow) como argumento.
-        self.emprestimo_dialog.finished.connect(lambda: self.service.populate_table_emprestimos_ativos(self))
-
-    def finalize_emprestimo(self):
-        emprestimo_repository = EmprestimoRepository()
-        funcionario_repository = FuncionarioRepository()
-        uniforme_repository = UniformeRepository()
-        selected_rows = self.tb_emprestimos_ativos.selectionModel().selectedRows()
-        if not selected_rows:
-            return
-        selected_row = selected_rows[0].row()
-        cpf_funcionario = self.tb_emprestimos_ativos.item(selected_row, 1).text()
-        uniforme_selecionado = self.tb_emprestimos_ativos.item(selected_row, 3).text()
-        msg_box = QMessageBox(self)
-        msg_box.setWindowTitle('Finalizar Empréstimo')
-        msg_box.setText('Tem certeza de que deseja finalizar este empréstimo?')
-        msg_box.setIcon(QMessageBox.Question)
-        yes_button = msg_box.addButton("Claro", QMessageBox.YesRole)
-        no_button = msg_box.addButton("Ainda não", QMessageBox.NoRole)
-        msg_box.exec()
-        if msg_box.clickedButton() == yes_button:
-            funcionario_recebido = funcionario_repository.select_funcionario_by_cpf(cpf_funcionario)
-            uniforme_recebido = uniforme_repository.select_uniforme_by_name(uniforme_selecionado)
-            try:
-                emprestimo_repository.finalizes_emprestimo(funcionario_recebido, uniforme_recebido)
-                QMessageBox.information(self, "Empréstimos", "Emprésitmo finalizado com sucesso!")
-                self.service.populate_table_emprestimos_ativos(self)
-            except Exception as e:
-                QMessageBox.warning(self, "Atenção", f'Problema ao realizar recebimento.\n'
-                                                     f'Erro: {e}')
 
 
     def insert_emprestimo(self, emprestimo_ui):

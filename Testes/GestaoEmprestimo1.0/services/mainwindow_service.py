@@ -17,16 +17,17 @@ class MainWindowService:
         lista_funcionarios = self.funcionario_repository.select_all_funcionarios()
         main_window.tb_funcionario.setRowCount(len(lista_funcionarios))
         for linha, funcionario in enumerate(lista_funcionarios):
-            main_window.tb_funcionario.setItem(linha, 0, QTableWidgetItem(funcionario.nome))
-            main_window.tb_funcionario.setItem(linha, 1, QTableWidgetItem(funcionario.cpf))
+            if funcionario.ativo is True:
+                main_window.tb_funcionario.setItem(linha, 0, QTableWidgetItem(funcionario.nome))
+                main_window.tb_funcionario.setItem(linha, 1, QTableWidgetItem(funcionario.cpf))
 
     def populate_table_uniforme(self, main_window):
         main_window.tb_uniformes.setRowCount(0)
         lista_uniforme = self.uniforme_repository.select_all_uniformes()
-
         main_window.tb_uniformes.setRowCount(len(lista_uniforme))
         for linha, uniforme in enumerate(lista_uniforme):
-            main_window.tb_uniformes.setItem(linha, 0, QTableWidgetItem(uniforme.nome))
+            if uniforme.ativo is True:
+                main_window.tb_uniformes.setItem(linha, 0, QTableWidgetItem(uniforme.nome))
 
     def populate_table_emprestimos_ativos(self, main_window):
         emprestimos_ativos = self.emprestimos_repository.select_emprestimos_ativos()

@@ -72,5 +72,5 @@ class FuncionarioRepository:
     @staticmethod
     def delete_funcionario(data):
         with DBConnectioHandler() as db:
-            db.session.delete(data)
+            db.session.query(Funcionario).filter(Funcionario.id == data.id).update({'ativo': False})
             db.session.commit()

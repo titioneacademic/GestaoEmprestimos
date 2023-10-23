@@ -15,6 +15,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.emprestimo_dialog = None
         self.setupUi(self)
+        self.uniforme_updated = None
 
         self.service_main_window = MainWindowService()
         self.service_funcionario = FuncionarioService()
@@ -26,16 +27,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.btn_emprestar.clicked.connect(self.adicionar_emprestimo)
         self.btn_adicionar_funcionario.clicked.connect(self.adicionar_funcionario)
+        self.btn_editar_funcionario.clicked.connect(self.atualizar_funcionario)
+        self.btn_remover_funcionario.clicked.connect(self.remover_funcionario)
         self.btn_adicionar_uniforme.clicked.connect(self.adicionar_uniforme)
-        self.btn_receber.clicked.connect(self.finalize_emprestimo)
+        self.btn_receber.clicked.connect(self.finalizar_emprestimo)
+        self.btn_editar_uniforme.clicked.connect(self.atualizar_uniforme)
 
     def adicionar_funcionario(self):
         self.service_funcionario.insert_funcionario(self)
 
+    def atualizar_funcionario(self):
+        self.service_funcionario.update_funcionario(self)
+
+    def remover_funcionario(self):
+        self.service_funcionario.delete_funcionario(self)
+
     def adicionar_uniforme(self):
         self.service_uniforme.insert_uniforme(self)
 
-    def finalize_emprestimo(self):
+    def atualizar_uniforme(self):
+        self.service_uniforme.update_uniforme(self)
+
+    def finalizar_emprestimo(self):
         self.service_emprestimo.finalize_emprestimo(self)
 
     def adicionar_emprestimo(self):

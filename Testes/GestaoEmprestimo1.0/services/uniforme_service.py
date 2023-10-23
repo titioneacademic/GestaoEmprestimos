@@ -20,6 +20,7 @@ class UniformeService:
     def insert_uniforme(self, main_window):
         uniforme = Uniforme()
         uniforme.nome = main_window.txt_nome_uniforme.text()
+        uniforme.ativo = True
         try:
             self.uniforme_repository.insert_one_uniforme(uniforme)
             main_window.txt_nome_uniforme.setText('')
@@ -35,3 +36,24 @@ class UniformeService:
         for uniforme in emprestimo_ui.uniformes:
             # Supondo que o Uniforme tenha um atributo 'nome' que você quer mostrar no QComboBox
             emprestimo_ui.cb_uniforme.addItem(uniforme.nome)
+
+    def update_uniforme(self, main_window):
+        if main_window.btn_editar_uniforme.text() == 'Editar':
+            selected_rows = main_window.tb_uniformes.selectionModel().selectedRows()
+            if not selected_rows:
+                return
+            selected_row = selected_rows[0].row()
+            main_window.txt_nome_uniforme.setText(main_window.tb_uniformes.item(selected_row, 0).text())
+            main_window.btn_editar_uniforme.setText('Atualizar')
+            self.uniforme_updated = self.uniforme_repository.select_uniforme_by_name(main_window.tb_uniformes.item(selected_row, 0).text())
+        else:
+            self.uniforme_updated.nome = main_window.txt_nome_uniforme.text()
+            try:
+                self.uniforme_repository.update_uniforme(self.uniforme_updated)
+                QMessageBox.information(main_window, "Cadastro de uniformes", "Uniforme atualizado com sucesso!")
+                main_window.btn_editar_uniforme.setText('Editar')
+                main_window.txt_nome_uniforme.clear()
+                main_window.txt_cpf.clear()
+                self.main_window_service.populate_table_uniforme(main_window)
+            except Exception as e:
+                QMessageBox.warning(main_window, "Atenção", f'Problema ao atualizar uniorme.\n')
