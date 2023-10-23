@@ -67,3 +67,8 @@ class UniformeRepository:
             db.session.query(Uniforme).filter(Uniforme.id == uniforme.id).update({'nome': uniforme.nome})
             db.session.commit()
 
+    @staticmethod
+    def delete_uniforme(uniforme):
+        with DBConnectioHandler() as db:
+            db.session.query(Uniforme).filter(Uniforme.nome == uniforme.nome).update({'ativo': False})
+            db.session.commit()

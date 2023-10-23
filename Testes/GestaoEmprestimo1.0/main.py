@@ -32,6 +32,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.btn_adicionar_uniforme.clicked.connect(self.adicionar_uniforme)
         self.btn_receber.clicked.connect(self.finalizar_emprestimo)
         self.btn_editar_uniforme.clicked.connect(self.atualizar_uniforme)
+        self.btn_remover_uniforme.clicked.connect(self.remover_uniforme)
 
     def adicionar_funcionario(self):
         self.service_funcionario.insert_funcionario(self)
@@ -48,6 +49,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def atualizar_uniforme(self):
         self.service_uniforme.update_uniforme(self)
 
+    def remover_uniforme(self):
+        self.service_uniforme.delete_uniforme(self)
     def finalizar_emprestimo(self):
         self.service_emprestimo.finalize_emprestimo(self)
 
@@ -68,6 +71,7 @@ class EmprestimoDialog(QDialog, Ui_Dialog):
         self.uiforme_service = UniformeService()
         self.service_funcionario = FuncionarioService()
         self.service_emprestimo = EmprestimoService()
+        self.service_main_window = MainWindowService()
 
         self.selected_funcionario = None
         self.uniformes = []
@@ -80,7 +84,7 @@ class EmprestimoDialog(QDialog, Ui_Dialog):
         self.service_funcionario.select_funcionario(self)
 
     def populate_uniformes(self):
-        self.uiforme_service.populate_uniformes(self)
+        self.service_main_window.populate_uniformes(self)
 
     def set_emprestimo(self):
         self.service_emprestimo.insert_emprestimo(self)
